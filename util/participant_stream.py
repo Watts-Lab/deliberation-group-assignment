@@ -11,13 +11,13 @@ class ParticipantStream():
         self.age_dist = stats.truncnorm(a=((19 - 45) / 15), b=((80 - 45) / 15), loc=45, scale=15)
         self.gender_dist = {'elements': ['M', 'F'], 'probabilities': [0.55, 0.45]}
         self.arrival_time_dist = stats.lognorm(s=1, scale=20)
-        self.departure_time_dist = stats.expon(scale=20)
+        self.departure_time_dist = stats.lognorm(s=1, scale=20)
 
     def generate_participants(self, n):
         party_s = self.rng.choice(a=self.party_dist['elements'], size=n, p=self.party_dist['probabilities'])
         age_s = self.age_dist.rvs(size=n, random_state=self.rng)
         gender_s = self.rng.choice(a=self.gender_dist['elements'], size=n, p=self.gender_dist['probabilities'])
-        arrival_s = self.arrival_time_dist.rvs(size=n, random_state=self.rng)
+        arrival_s = sorted(self.arrival_time_dist.rvs(size=n, random_state=self.rng))
         departure_s = self.departure_time_dist.rvs(size=n, random_state=self.rng)
         return [
             {
